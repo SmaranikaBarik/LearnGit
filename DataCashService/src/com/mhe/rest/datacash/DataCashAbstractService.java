@@ -18,8 +18,8 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.log4j.Logger;
 
-import com.mhe.rest.datacash.entity.Request;
-import com.mhe.rest.datacash.entity.TxnDetails;
+import com.mhe.rest.datacash.request.entity.Request;
+import com.mhe.rest.datacash.request.entity.TxnDetails;
 import com.mhe.rest.datacash.util.LoggerUtility;
 import com.mhe.rest.datacash.util.PropertiesUtil;
 import com.sun.jersey.api.client.Client;
@@ -72,24 +72,24 @@ public class DataCashAbstractService {
 		return webInitResource;
 	}
 
-	private static com.mhe.rest.datacash.entity.Response getResponseObject(
+	private static com.mhe.rest.datacash.response.entity.Response getResponseObject(
 			String output) throws JAXBException {
 
 		logger.info("Within the getResponseObject method");
 
 		JAXBContext jaxbContext = JAXBContext
-				.newInstance(com.mhe.rest.datacash.entity.Response.class);
+				.newInstance(com.mhe.rest.datacash.response.entity.Response.class);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
 		StreamSource streamSource = new StreamSource(new StringReader(output));
-		JAXBElement<com.mhe.rest.datacash.entity.Response> res = unmarshaller
+		JAXBElement<com.mhe.rest.datacash.response.entity.Response> res = unmarshaller
 				.unmarshal(streamSource,
-						com.mhe.rest.datacash.entity.Response.class);
+						com.mhe.rest.datacash.response.entity.Response.class);
 
 		logger.info("Response is::"
-				+ (com.mhe.rest.datacash.entity.Response) res.getValue());
+				+ (com.mhe.rest.datacash.response.entity.Response) res.getValue());
 
-		return (com.mhe.rest.datacash.entity.Response) res.getValue();
+		return (com.mhe.rest.datacash.response.entity.Response) res.getValue();
 
 	}
 
@@ -192,7 +192,7 @@ public class DataCashAbstractService {
 
 		logger.info("Session Setup Output::" + output1);
 
-		com.mhe.rest.datacash.entity.Response st = getResponseObject(output1);
+		com.mhe.rest.datacash.response.entity.Response st = getResponseObject(output1);
 
 		String session_id = st.getHpsTxn().getSessionId();
 
@@ -424,7 +424,7 @@ public class DataCashAbstractService {
 		System.out.println("check the request --- " + response.getStatus());
 		System.out.println("check the response entity --- " + output1);
 
-		com.mhe.rest.datacash.entity.Response st = getResponseObject(output1);
+		com.mhe.rest.datacash.response.entity.Response st = getResponseObject(output1);
 
 		System.out.println(" response entity --- " + st);
 		System.out.println("check the response entity --- "
@@ -518,7 +518,7 @@ public class DataCashAbstractService {
 		System.out.println("check the request --- " + response.getStatus());
 		System.out.println("check the response entity --- " + output1);
 
-		com.mhe.rest.datacash.entity.Response st = getResponseObject(output1);
+		com.mhe.rest.datacash.response.entity.Response st = getResponseObject(output1);
 
 		System.out.println(" response entity --- " + st);
 		System.out.println("check the response entity --- "
