@@ -1,0 +1,2278 @@
+<?xml version="1.0" encoding="windows-1252" ?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<xsd:element name="gift">
+		<xsd:complexType>
+			<xsd:simpleContent>
+				<xsd:extension base="xsd:string">
+					<xsd:attribute name="card" type="xsd:string" />
+					<xsd:attribute name="wrapped" type="xsd:boolean" />
+				</xsd:extension>
+			</xsd:simpleContent>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="Request">
+		<xsd:annotation>
+			<xsd:documentation>The base element of all valid DataCash requests.
+			</xsd:documentation>
+		</xsd:annotation>
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="Authentication">
+					<xsd:annotation>
+						<xsd:documentation>The authentication block contains security data
+							to identify the merchant to the DataCash system.
+						</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="client" type="xsd:string">
+								<xsd:annotation>
+									<xsd:documentation>The merchant's vTID, which will be supplied
+										by DataCash at sign-up.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="password" type="xsd:string">
+								<xsd:annotation>
+									<xsd:documentation>The merchant's password, which will be
+										supplied by DataCash at sign-up
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="UserAgent" minOccurs="0">
+					<xsd:annotation>
+						<xsd:documentation>The UserAgent block contains information about
+							the libraries used to connect to DataCash. It
+							will normally be populated automatically by the
+							DataCash merchant APIs.
+						</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="Libraries" minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>Details of the client-side libraries should
+										be provided here.
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="lib" minOccurs="0" maxOccurs="unbounded">
+											<xsd:complexType>
+												<xsd:simpleContent>
+													<xsd:extension base="xsd:string">
+														<xsd:attribute name="version" type="xsd:string" />
+													</xsd:extension>
+												</xsd:simpleContent>
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+									<xsd:attribute name="bundle" type="xsd:string" />
+									<xsd:attribute name="version" type="xsd:string" />
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="schema" type="xsd:string"
+								minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>The version number of the schema being used
+										should be indicated here.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="environment" minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>If DataCash is being used from within
+										another environment (eg. Intershop), this
+										should be indicated here.
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:complexType>
+									<xsd:simpleContent>
+										<xsd:extension base="xsd:string">
+											<xsd:attribute name="version" type="xsd:string" />
+										</xsd:extension>
+									</xsd:simpleContent>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="architecture" minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>Details of hardware and operating system.
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:complexType>
+									<xsd:simpleContent>
+										<xsd:extension base="xsd:string">
+											<xsd:attribute name="version" type="xsd:string" />
+										</xsd:extension>
+									</xsd:simpleContent>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="language" minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>Details of the programming language (and
+										version) used.
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:complexType>
+									<xsd:simpleContent>
+										<xsd:extension base="xsd:string">
+											<xsd:attribute name="version" type="xsd:string" />
+										</xsd:extension>
+									</xsd:simpleContent>
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="Transaction">
+					<xsd:annotation>
+						<xsd:documentation>The Transaction block contains the details of
+							the
+							transaction itself.
+						</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element ref="TxnDetails" minOccurs="0" />
+							<xsd:choice>
+								<xsd:element name="CardTxn">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="Card">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="pan" type="xsd:string">
+															<xsd:annotation>
+																<xsd:documentation>The PAN (or Primary Account
+																	Number) is the credit-card
+																	number, printed on the face
+																	of the card.
+																</xsd:documentation>
+															</xsd:annotation>
+														</xsd:element>
+														<xsd:element name="expirydate" type="xsd:string" />
+														<xsd:element name="startdate" type="xsd:string"
+															minOccurs="0" />
+														<xsd:element name="issuenumber" type="xsd:string"
+															minOccurs="0" />
+														<xsd:element name="Cv2Avs" minOccurs="0">
+															<xsd:complexType>
+																<xsd:sequence>
+																	<xsd:element name="policy" type="xsd:string"
+																		minOccurs="0" />
+																	<xsd:element name="street_address1" type="xsd:string"
+																		minOccurs="0" />
+																	<xsd:element name="street_address2" type="xsd:string"
+																		minOccurs="0" />
+																	<xsd:element name="street_address3" type="xsd:string"
+																		minOccurs="0" />
+																	<xsd:element name="street_address4" type="xsd:string"
+																		minOccurs="0" />
+																	<xsd:element name="postcode" type="xsd:string"
+																		minOccurs="0" />
+																	<xsd:element name="cv2" minOccurs="0">
+																		<xsd:annotation>
+																			<xsd:documentation>The CV2 (Cardholder
+																				Verification Value)
+																				number is the three or
+																				four-digit number
+																				printed on the
+																				signature strip on the
+																				reverse of the card. It
+																				may be captured, but
+																				should never be
+																				recorded.
+																			</xsd:documentation>
+																		</xsd:annotation>
+																		<xsd:simpleType>
+																			<xsd:restriction base="xsd:string">
+																				<xsd:maxLength value="4" />
+																				<xsd:minLength value="3" />
+																			</xsd:restriction>
+																		</xsd:simpleType>
+																	</xsd:element>
+																	<xsd:element name="cv2_present" minOccurs="0">
+																		<xsd:annotation>
+																			<xsd:documentation>The customer response
+																				to a merchant request
+																				for the Card
+																				Identification Number
+																			</xsd:documentation>
+																		</xsd:annotation>
+																		<xsd:simpleType>
+																			<xsd:restriction base="xsd:string">
+																				<xsd:enumeration value="0" />
+																				<xsd:enumeration value="1" />
+																				<xsd:enumeration value="2" />
+																				<xsd:enumeration value="8" />
+																				<xsd:enumeration value="9" />
+																			</xsd:restriction>
+																		</xsd:simpleType>
+																	</xsd:element>
+																	<xsd:element name="ExtendedPolicy"
+																		minOccurs="0">
+																		<xsd:annotation>
+																			<xsd:documentation>Alternative more
+																				detailed policy for
+																				accepting or rejecting
+																				transaction based on
+																				the individual results
+																				of the cv2avs check.
+																				Transaction will be
+																				rejected if both policy
+																				and ExtendedPolicy
+																				elements are specified,
+																				or if the clearinghouse
+																				does not support use of
+																				the extended policy.
+																			</xsd:documentation>
+																		</xsd:annotation>
+																		<xsd:complexType>
+																			<xsd:sequence>
+																				<xsd:element name="cv2_policy">
+																					<xsd:complexType>
+																						<xsd:attribute name="notprovided"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									cv2 result is
+																									0.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="notchecked"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									cv2 result is
+																									1.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="matched" type="xsd:string"
+																							use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									cv2 result is
+																									2.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="notmatched"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									cv2 result is
+																									4.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="partialmatch"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									cv2 result is
+																									8 (attribute
+																									required even
+																									though n/a to
+																									cv2).
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																					</xsd:complexType>
+																				</xsd:element>
+																				<xsd:element name="postcode_policy">
+																					<xsd:complexType>
+																						<xsd:attribute name="notprovided"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 0
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="notchecked"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 1.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="matched" type="xsd:string"
+																							use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 2.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="notmatched"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 4.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="partialmatch"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 8.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																					</xsd:complexType>
+																				</xsd:element>
+																				<xsd:element name="address_policy">
+																					<xsd:complexType>
+																						<xsd:attribute name="notprovided"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 0
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="notchecked"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 1.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="matched" type="xsd:string"
+																							use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 2.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="notmatched"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 4.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="partialmatch"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>If an
+																									authorisation
+																									code has been
+																									manually
+																									obtained from
+																									the bank, it
+																									may be
+																									supplied here.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																					</xsd:complexType>
+																				</xsd:element>
+																			</xsd:sequence>
+																		</xsd:complexType>
+																	</xsd:element>
+																</xsd:sequence>
+															</xsd:complexType>
+														</xsd:element>
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="authcode" minOccurs="0">
+												<xsd:complexType>
+													<xsd:simpleContent>
+														<xsd:extension base="xsd:string">
+															<xsd:attribute name="method" type="xsd:string"
+																use="optional">
+																<xsd:annotation>
+																	<xsd:documentation>Only applicable if an
+																		authcode value is supplied
+																		for a CHP transaction. Can
+																		be one of terminal, online
+																		or telephone.
+																	</xsd:documentation>
+																</xsd:annotation>
+															</xsd:attribute>
+														</xsd:extension>
+													</xsd:simpleContent>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="method">
+												<xsd:simpleType>
+													<xsd:restriction base="xsd:string">
+														<xsd:enumeration value="auth" />
+														<xsd:enumeration value="pre" />
+														<xsd:enumeration value="refund" />
+														<xsd:enumeration value="erp" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="ICC">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="aid" minOccurs="0" />
+														<xsd:element name="aip" />
+														<xsd:element name="app_usage_control"
+															minOccurs="0" />
+														<xsd:element name="arqc" />
+														<xsd:element name="atc" />
+														<xsd:element name="auth_response_code"
+															minOccurs="0" />
+														<xsd:element name="crypto_info_data"
+															minOccurs="0" />
+														<xsd:element name="crypto_tran_type" />
+														<xsd:element name="crypto_txn_amount"
+															minOccurs="0" />
+														<xsd:element name="cvm" minOccurs="0" />
+														<xsd:element name="issuer_app_data" minOccurs="0" />
+														<xsd:element name="other_card_data" minOccurs="0" />
+														<xsd:element name="pos_entry_mode" minOccurs="0" />
+														<xsd:element name="reason_online_code" />
+														<xsd:element name="seq_or_issue_number"
+															minOccurs="0" />
+														<xsd:element name="term_app_ver_no" minOccurs="0" />
+														<xsd:element name="term_capabilities"
+															minOccurs="0" />
+														<xsd:element name="term_country_code"
+															minOccurs="0" />
+														<xsd:element name="term_txn_date" minOccurs="0" />
+														<xsd:element name="term_type" minOccurs="0" />
+														<xsd:element name="tvr" />
+														<xsd:element name="txn_country_code"
+															minOccurs="0" />
+														<xsd:element name="txn_currency_code"
+															minOccurs="0" />
+														<xsd:element name="txn_status_info" minOccurs="0" />
+														<xsd:element name="unpredictable" />
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="Secure" minOccurs="0">
+												<xsd:annotation>
+													<xsd:documentation>3-D Secure is a service which
+														enables internet merchants to
+														authenticate registered cardholders
+														whilst they are making an online
+														payment. The service works by the
+														cardholder providing their password
+														to their card issuer whilst at the
+														merchant's 'virtual checkout' and
+														the card issuer confirming to the
+														merchant that the cardholder is
+														genuine. This element is used by
+														registered merchants with the
+														appropriate MPI client software, to
+														pass information to DataCash so
+														that bank authorization can take
+														place with the correct flagging as
+														3-D Secure to gain the full benefit
+														from the transaction certification.
+													</xsd:documentation>
+												</xsd:annotation>
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="security_code">
+															<xsd:annotation>
+																<xsd:documentation>Field for data which proves
+																	that cardholder verification
+																	took place.
+																</xsd:documentation>
+															</xsd:annotation>
+														</xsd:element>
+														<xsd:element name="cardholder_registered">
+															<xsd:annotation>
+																<xsd:documentation>Mandatory field stating
+																	whether the cardholder was
+																	registererd with 3-D Secure.
+																</xsd:documentation>
+															</xsd:annotation>
+															<xsd:simpleType>
+																<xsd:restriction base="xsd:string">
+																	<xsd:enumeration value="yes" />
+																	<xsd:enumeration value="no" />
+																	<xsd:enumeration value="attempted" />
+																</xsd:restriction>
+															</xsd:simpleType>
+														</xsd:element>
+														<xsd:element name="eci">
+															<xsd:annotation>
+																<xsd:documentation>Field containing data passed
+																	back from 3rd party MPI.
+																</xsd:documentation>
+															</xsd:annotation>
+														</xsd:element>
+														<xsd:element name="transactionID" />
+													</xsd:sequence>
+													<xsd:attribute name="type" type="xsd:string"
+														use="required">
+														<xsd:annotation>
+															<xsd:documentation>visa and ucaf are the only
+																supported values at present
+															</xsd:documentation>
+														</xsd:annotation>
+													</xsd:attribute>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="Terminal" minOccurs="0">
+												<xsd:annotation>
+													<xsd:documentation>Mandatory for CHP transactions,
+														specifying the Terminal id,
+														capabilities and features.
+													</xsd:documentation>
+												</xsd:annotation>
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="terminal_capabilities">
+															<xsd:complexType>
+																<xsd:attribute name="ic_reader" type="xsd:boolean"
+																	use="required" />
+																<xsd:attribute name="magnetic_stripe_reader"
+																	type="xsd:boolean" use="required" />
+																<xsd:attribute name="manual_card_entry"
+																	type="xsd:boolean" use="required" />
+															</xsd:complexType>
+														</xsd:element>
+														<xsd:element name="features_capabilities">
+															<xsd:complexType>
+																<xsd:attribute name="pin_pad_available"
+																	type="xsd:boolean" use="required" />
+															</xsd:complexType>
+														</xsd:element>
+													</xsd:sequence>
+													<xsd:attribute name="id" type="xsd:string"
+														use="required" />
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="hotcardfile" minOccurs="0">
+												<xsd:annotation>
+													<xsd:documentation>Only applicable to CHP transactions.
+													</xsd:documentation>
+												</xsd:annotation>
+												<xsd:simpleType>
+													<xsd:restriction base="xsd:string">
+														<xsd:enumeration value="none" />
+														<xsd:enumeration value="Switch 400" />
+														<xsd:enumeration value="Switch 8000" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="card_details" />
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+								<xsd:element name="ChequeTxn">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="Cheque">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="sortcode" type="xsd:string" />
+														<xsd:element name="accountnumber" type="xsd:string" />
+														<xsd:element name="chequenumber" type="xsd:string" />
+													</xsd:sequence>
+													<xsd:attribute name="type" type="xsd:string"
+														use="required" />
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="method">
+												<xsd:simpleType>
+													<xsd:restriction base="xsd:string">
+														<xsd:enumeration value="cheque" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+								<xsd:element name="HpsTxn">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="method"  minOccurs="1">
+												<xsd:simpleType>
+													<xsd:restriction base="xsd:string">
+														<xsd:enumeration value="setup" />
+														<xsd:enumeration value="setup_full" />
+													</xsd:restriction>
+												</xsd:simpleType>
+
+											</xsd:element>
+											<xsd:element name="page_set_id" type="xsd:int" minOccurs="1"/>
+											<xsd:element name="return_url" type="xsd:string" minOccurs="0"/>
+											<xsd:element name="expiry_url" type="xsd:string" minOccurs="0"/>
+											<xsd:element name="error_url" type="xsd:string" minOccurs="0"/>
+											<xsd:element name="Card">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="pan" type="xsd:string">
+															<xsd:annotation>
+																<xsd:documentation>The PAN (or Primary Account
+																	Number) is the credit-card
+																	number, printed on the face
+																	of the card.
+																</xsd:documentation>
+															</xsd:annotation>
+														</xsd:element>
+														<xsd:element name="expirydate" type="xsd:string" />
+														<xsd:element name="startdate" type="xsd:string"
+															minOccurs="0" />
+														<xsd:element name="issuenumber" type="xsd:string"
+															minOccurs="0" />
+														<xsd:element name="Cv2Avs" minOccurs="0">
+															<xsd:complexType>
+																<xsd:sequence>
+																	<xsd:element name="policy" type="xsd:string"
+																		minOccurs="0" />
+																	<xsd:element name="street_address1" type="xsd:string"
+																		minOccurs="0" />
+																	<xsd:element name="street_address2" type="xsd:string"
+																		minOccurs="0" />
+																	<xsd:element name="street_address3" type="xsd:string"
+																		minOccurs="0" />
+																	<xsd:element name="street_address4" type="xsd:string"
+																		minOccurs="0" />
+																	<xsd:element name="postcode" type="xsd:string"
+																		minOccurs="0" />
+																	<xsd:element name="cv2" minOccurs="0">
+																		<xsd:annotation>
+																			<xsd:documentation>The CV2 (Cardholder
+																				Verification Value)
+																				number is the three or
+																				four-digit number
+																				printed on the
+																				signature strip on the
+																				reverse of the card. It
+																				may be captured, but
+																				should never be
+																				recorded.
+																			</xsd:documentation>
+																		</xsd:annotation>
+																		<xsd:simpleType>
+																			<xsd:restriction base="xsd:string">
+																				<xsd:maxLength value="4" />
+																				<xsd:minLength value="3" />
+																			</xsd:restriction>
+																		</xsd:simpleType>
+																	</xsd:element>
+																	<xsd:element name="cv2_present" minOccurs="0">
+																		<xsd:annotation>
+																			<xsd:documentation>The customer response
+																				to a merchant request
+																				for the Card
+																				Identification Number
+																			</xsd:documentation>
+																		</xsd:annotation>
+																		<xsd:simpleType>
+																			<xsd:restriction base="xsd:string">
+																				<xsd:enumeration value="0" />
+																				<xsd:enumeration value="1" />
+																				<xsd:enumeration value="2" />
+																				<xsd:enumeration value="8" />
+																				<xsd:enumeration value="9" />
+																			</xsd:restriction>
+																		</xsd:simpleType>
+																	</xsd:element>
+																	<xsd:element name="ExtendedPolicy"
+																		minOccurs="0">
+																		<xsd:annotation>
+																			<xsd:documentation>Alternative more
+																				detailed policy for
+																				accepting or rejecting
+																				transaction based on
+																				the individual results
+																				of the cv2avs check.
+																				Transaction will be
+																				rejected if both policy
+																				and ExtendedPolicy
+																				elements are specified,
+																				or if the clearinghouse
+																				does not support use of
+																				the extended policy.
+																			</xsd:documentation>
+																		</xsd:annotation>
+																		<xsd:complexType>
+																			<xsd:sequence>
+																				<xsd:element name="cv2_policy">
+																					<xsd:complexType>
+																						<xsd:attribute name="notprovided"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									cv2 result is
+																									0.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="notchecked"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									cv2 result is
+																									1.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="matched" type="xsd:string"
+																							use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									cv2 result is
+																									2.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="notmatched"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									cv2 result is
+																									4.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="partialmatch"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									cv2 result is
+																									8 (attribute
+																									required even
+																									though n/a to
+																									cv2).
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																					</xsd:complexType>
+																				</xsd:element>
+																				<xsd:element name="postcode_policy">
+																					<xsd:complexType>
+																						<xsd:attribute name="notprovided"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 0
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="notchecked"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 1.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="matched" type="xsd:string"
+																							use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 2.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="notmatched"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 4.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="partialmatch"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 8.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																					</xsd:complexType>
+																				</xsd:element>
+																				<xsd:element name="address_policy">
+																					<xsd:complexType>
+																						<xsd:attribute name="notprovided"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 0
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="notchecked"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 1.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="matched" type="xsd:string"
+																							use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 2.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="notmatched"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>specify
+																									whether to
+																									'accept' or
+																									'reject'
+																									transaction
+																									if the
+																									individual
+																									postcode
+																									result is 4.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																						<xsd:attribute name="partialmatch"
+																							type="xsd:string" use="required">
+																							<xsd:annotation>
+																								<xsd:documentation>If an
+																									authorisation
+																									code has been
+																									manually
+																									obtained from
+																									the bank, it
+																									may be
+																									supplied here.
+																								</xsd:documentation>
+																							</xsd:annotation>
+																						</xsd:attribute>
+																					</xsd:complexType>
+																				</xsd:element>
+																			</xsd:sequence>
+																		</xsd:complexType>
+																	</xsd:element>
+																</xsd:sequence>
+															</xsd:complexType>
+														</xsd:element>
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+
+
+											<xsd:element name="card_details" minOccurs="0">
+												<xsd:annotation>
+													<xsd:documentation>In a CVV Only card capture, the
+														datacash_reference of the Payment Token
+													</xsd:documentation>
+												</xsd:annotation>
+												<xsd:complexType>
+													<xsd:simpleContent>
+														<xsd:extension base="xsd:string">
+															<xsd:attribute name="type" type="xsd:string" />
+
+														</xsd:extension>
+													</xsd:simpleContent>
+												</xsd:complexType>
+											</xsd:element>
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+								<xsd:element name="DirectDebitTxn">
+									<xsd:annotation>
+										<xsd:documentation>Set up a direct debit for recurring
+											payment.
+										</xsd:documentation>
+									</xsd:annotation>
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="sortcode" />
+											<xsd:element name="accountnumber" />
+											<xsd:element name="accountname" />
+											<xsd:element name="method">
+												<xsd:simpleType>
+													<xsd:restriction base="xsd:string">
+														<xsd:enumeration value="setup" />
+														<xsd:enumeration value="presetup" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+										</xsd:sequence>
+										<xsd:attribute name="active" type="xsd:string"
+											use="optional" />
+										<xsd:attribute name="type" type="xsd:string"
+											use="optional" />
+									</xsd:complexType>
+								</xsd:element>
+								<xsd:element name="HistoricTxn">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="reference" type="xsd:string">
+												<xsd:annotation>
+													<xsd:documentation>The DataCash unique reference of
+														the original transaction.
+													</xsd:documentation>
+												</xsd:annotation>
+											</xsd:element>
+											<xsd:element name="authcode" minOccurs="0"
+												type="xsd:string">
+												<xsd:annotation>
+													<xsd:documentation>Fulfill transactions require the
+														authcode of the original transaction
+													</xsd:documentation>
+												</xsd:annotation>
+											</xsd:element>
+											<xsd:element name="method">
+												<xsd:annotation>
+													<xsd:documentation>One of cancel, fulfill, txn_refund,
+														revoke, drawdown, confirm,
+														ddrefund,
+														threedsecure_authorization_request,
+														threedsecure_authorize_referreal_request
+													</xsd:documentation>
+												</xsd:annotation>
+												<xsd:complexType>
+													<xsd:attribute name="reversal" type="xsd:boolean"
+														use="optional">
+														<xsd:annotation>
+															<xsd:documentation>optional attribute when method
+																value is cancel of a CHP
+																transaction
+															</xsd:documentation>
+														</xsd:annotation>
+													</xsd:attribute>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="tran_code" minOccurs="0"
+												type="xsd:string" />
+											<xsd:element name="duedate" minOccurs="0"
+												type="xsd:string" />
+											<xsd:element name="pares_message" minOccurs="0">
+												<xsd:annotation>
+													<xsd:documentation>Payer Authentication Response. Only
+														applicable when the method is
+														threedsecure_authorization_request,
+														and payer authentication has taken
+														place. Contains the message
+														returned by the ACS, providing the
+														results of the Issuer's 3-D Secure
+														cardholder authentication.
+													</xsd:documentation>
+												</xsd:annotation>
+											</xsd:element>
+											<xsd:element name="merchantreference" minOccurs="0"
+												type="xsd:string" />
+											<xsd:element name="cprs_message" minOccurs="0" />
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+								<xsd:element name="DirectCreditTxn">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="method" />
+											<xsd:element name="sortcode" />
+											<xsd:element name="accountnumber" />
+											<xsd:element name="accountname" />
+											<xsd:element name="bankreference" minOccurs="0" />
+											<xsd:element name="pan" minOccurs="0" />
+											<xsd:element name="cardname" minOccurs="0" />
+											<xsd:element name="expirydate" minOccurs="0" />
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+								<xsd:element name="ContAuthTxn">
+									<xsd:annotation>
+										<xsd:documentation>Setup a recurring transaction from a
+											credit card or from a direct debit
+											instruction. When using the Historic
+											model, type attribute must be specified
+											with either 'setup' or 'historic' as the
+											value.
+										</xsd:documentation>
+									</xsd:annotation>
+									<xsd:complexType>
+										<xsd:sequence minOccurs="0">
+											<xsd:element name="method">
+												<xsd:annotation>
+													<xsd:documentation>Can be auth, pre or drawdown.
+													</xsd:documentation>
+												</xsd:annotation>
+												<xsd:simpleType>
+													<xsd:restriction base="xsd:string">
+														<xsd:enumeration value="auth" />
+														<xsd:enumeration value="pre" />
+														<xsd:enumeration value="drawdown" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="startdate">
+												<xsd:annotation>
+													<xsd:documentation>The date on which the regular
+														transactions start.
+													</xsd:documentation>
+												</xsd:annotation>
+											</xsd:element>
+											<xsd:element name="period">
+												<xsd:annotation>
+													<xsd:documentation>The frequency of the recurring
+														transactions
+													</xsd:documentation>
+												</xsd:annotation>
+												<xsd:simpleType>
+													<xsd:restriction base="xsd:string">
+														<xsd:enumeration value="weekly" />
+														<xsd:enumeration value="monthly" />
+														<xsd:enumeration value="annually" />
+														<xsd:enumeration value="quarterly" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="amount">
+												<xsd:annotation>
+													<xsd:documentation>The amount the regular payments are
+														for.
+													</xsd:documentation>
+												</xsd:annotation>
+												<xsd:complexType>
+													<xsd:simpleContent>
+														<xsd:extension base="xsd:float">
+															<xsd:attribute name="currency" type="xsd:string"
+																use="optional" />
+														</xsd:extension>
+													</xsd:simpleContent>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="number_of_payments" minOccurs="0"
+												type="xsd:integer">
+												<xsd:annotation>
+													<xsd:documentation>The number of regular payments. The
+														payments will be repeated until the
+														account is cancelled if this is
+														left out.
+													</xsd:documentation>
+												</xsd:annotation>
+											</xsd:element>
+											<xsd:element name="FirstPayment" minOccurs="0">
+												<xsd:annotation>
+													<xsd:documentation>Optional first payment. Separate
+														from the regular payments.
+													</xsd:documentation>
+												</xsd:annotation>
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="amount">
+															<xsd:annotation>
+																<xsd:documentation>Amount the first payment is
+																	for.
+																</xsd:documentation>
+															</xsd:annotation>
+															<xsd:complexType>
+																<xsd:simpleContent>
+																	<xsd:extension base="xsd:float">
+																		<xsd:attribute name="currency" type="xsd:string"
+																			use="optional" />
+																	</xsd:extension>
+																</xsd:simpleContent>
+															</xsd:complexType>
+														</xsd:element>
+														<xsd:element name="date" type="xsd:string">
+															<xsd:annotation>
+																<xsd:documentation>Date the first payment is to
+																	be taken. This has to be
+																	before the regular payments
+																	are started
+																</xsd:documentation>
+															</xsd:annotation>
+														</xsd:element>
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="LastPayment" minOccurs="0">
+												<xsd:annotation>
+													<xsd:documentation>Optional last payment. This can
+														only be specified when the number
+														of payments is fixed.
+													</xsd:documentation>
+												</xsd:annotation>
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="amount">
+															<xsd:annotation>
+																<xsd:documentation>The amount the last payment
+																	is for.
+																</xsd:documentation>
+															</xsd:annotation>
+															<xsd:complexType>
+																<xsd:simpleContent>
+																	<xsd:extension base="xsd:float">
+																		<xsd:attribute name="currency" type="xsd:string"
+																			use="optional" />
+																	</xsd:extension>
+																</xsd:simpleContent>
+															</xsd:complexType>
+														</xsd:element>
+														<xsd:element name="date" type="xsd:string">
+															<xsd:annotation>
+																<xsd:documentation>Date the last payment is due.
+																	This has to be after the
+																	regular payments have
+																	finished.
+																</xsd:documentation>
+															</xsd:annotation>
+														</xsd:element>
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="flagging" minOccurs="0">
+												<xsd:complexType>
+													<xsd:attribute name="first" type="xsd:string"
+														use="optional" />
+													<xsd:attribute name="last" type="xsd:string"
+														use="optional" />
+												</xsd:complexType>
+											</xsd:element>
+										</xsd:sequence>
+										<xsd:attribute name="type" type="xsd:string" />
+									</xsd:complexType>
+								</xsd:element>
+								<xsd:element name="BatchInputTxn">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="batchfile">
+												<xsd:complexType>
+													<xsd:attribute name="format" type="xsd:string" />
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="total_amount" />
+											<xsd:element name="txn_count" type="xsd:int" />
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+								<xsd:element name="SmartVoucherTxn">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="Purchase" minOccurs="0">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="product_code" />
+														<xsd:element name="value" />
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="Redeem" minOccurs="0">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="number" />
+														<xsd:element name="value" />
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="PartSpend" minOccurs="0">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="Purchase">
+															<xsd:complexType>
+																<xsd:sequence>
+																	<xsd:element name="product_code" />
+																	<xsd:element name="value" />
+																</xsd:sequence>
+															</xsd:complexType>
+														</xsd:element>
+														<xsd:element name="Redeem">
+															<xsd:complexType>
+																<xsd:sequence>
+																	<xsd:element name="number" />
+																	<xsd:element name="value" />
+																</xsd:sequence>
+															</xsd:complexType>
+														</xsd:element>
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="Enquiry" minOccurs="0">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="number" />
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="Add" minOccurs="0">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="value" />
+														<xsd:element name="number" />
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="Subtract" minOccurs="0">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="number" />
+														<xsd:element name="value" />
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+								<xsd:element name="URUTxn">
+									<xsd:complexType>
+										<xsd:sequence>
+											<xsd:element name="method">
+												<xsd:simpleType>
+													<xsd:restriction base="xsd:string">
+														<xsd:enumeration value="authenticate" />
+														<xsd:enumeration value="get_log_by_authentication_id" />
+													</xsd:restriction>
+												</xsd:simpleType>
+											</xsd:element>
+											<xsd:element name="Basic" minOccurs="0">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="forename" minOccurs="0"
+															type="xsd:string" />
+														<xsd:element name="middle_initial" minOccurs="0"
+															type="xsd:string" />
+														<xsd:element name="surname" minOccurs="0"
+															type="xsd:string" />
+														<xsd:element name="dob_day" minOccurs="0"
+															type="xsd:gDay" />
+														<xsd:element name="dob_month" minOccurs="0"
+															type="xsd:gMonth" />
+														<xsd:element name="dob_year" minOccurs="0"
+															type="xsd:gYear" />
+														<xsd:element name="gender" minOccurs="0"
+															type="xsd:string" />
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="Address1" minOccurs="0" type="Address" />
+											<xsd:element name="Address2" minOccurs="0" type="Address" />
+											<xsd:element name="Address3" minOccurs="0" type="Address" />
+											<xsd:element name="Address4" minOccurs="0" type="Address" />
+											<xsd:element name="Passport" minOccurs="0">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="number1" minOccurs="0" />
+														<xsd:element name="number2" minOccurs="0" />
+														<xsd:element name="number3" minOccurs="0" />
+														<xsd:element name="number4" minOccurs="0" />
+														<xsd:element name="number5" minOccurs="0" />
+														<xsd:element name="number6" minOccurs="0" />
+														<xsd:element name="expiry_day" type="xsd:gDay"
+															minOccurs="0" />
+														<xsd:element name="expiry_month" type="xsd:gMonth"
+															minOccurs="0" />
+														<xsd:element name="expiry_year" type="xsd:gYear"
+															minOccurs="0" />
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="Electric" minOccurs="0">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="number1" minOccurs="0" />
+														<xsd:element name="number2" minOccurs="0" />
+														<xsd:element name="number3" minOccurs="0" />
+														<xsd:element name="number4" minOccurs="0" />
+														<xsd:element name="mail_sort" minOccurs="0" />
+														<xsd:element name="postcode" minOccurs="0" />
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="Telephone" minOccurs="0">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="number" minOccurs="0"
+															type="xsd:string" />
+														<xsd:element name="active_month" minOccurs="0"
+															type="xsd:int" />
+														<xsd:element name="active_year" minOccurs="0"
+															type="xsd:int" />
+													</xsd:sequence>
+													<xsd:attribute name="exdirectory" type="xsd:boolean" />
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="Driver" minOccurs="0">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="number1" minOccurs="0" />
+														<xsd:element name="number2" minOccurs="0" />
+														<xsd:element name="number3" minOccurs="0" />
+														<xsd:element name="number4" minOccurs="0" />
+														<xsd:element name="mail_sort" minOccurs="0" />
+														<xsd:element name="postcode" minOccurs="0"
+															type="xsd:string" />
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="Employment" minOccurs="0">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="residence_type" type="xsd:string"
+															minOccurs="0" />
+														<xsd:element name="employment_status" type="xsd:string"
+															minOccurs="0" />
+														<xsd:element name="current_time" type="xsd:string"
+															minOccurs="0" />
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="CreditDebitCard" minOccurs="0">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="card_number" type="xsd:string" />
+														<xsd:element name="card_expiry_date" type="xsd:string" />
+														<xsd:element name="card_issue_number" type="xsd:integer"
+															minOccurs="0" />
+														<xsd:element name="card_verification_code"
+															type="xsd:string" />
+													</xsd:sequence>
+													<xsd:attribute name="cardtype" type="xsd:string" />
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="InternationalPassport"
+												minOccurs="0">
+												<xsd:complexType>
+													<xsd:sequence>
+														<xsd:element name="number1" minOccurs="0" />
+														<xsd:element name="number2" minOccurs="0" />
+														<xsd:element name="number3" minOccurs="0" />
+														<xsd:element name="number4" minOccurs="0" />
+														<xsd:element name="number5" minOccurs="0" />
+														<xsd:element name="number6" minOccurs="0" />
+														<xsd:element name="number7" minOccurs="0" />
+														<xsd:element name="number8" minOccurs="0" />
+														<xsd:element name="number9" minOccurs="0" />
+														<xsd:element name="expiry_day" type="xsd:gDay"
+															minOccurs="0" />
+														<xsd:element name="expiry_month" type="xsd:gMonth"
+															minOccurs="0" />
+														<xsd:element name="expiry_year" type="xsd:gYear"
+															minOccurs="0" />
+														<xsd:element name="country_of_origin" type="xsd:string"
+															minOccurs="0" />
+													</xsd:sequence>
+												</xsd:complexType>
+											</xsd:element>
+											<xsd:element name="guid" minOccurs="0" />
+										</xsd:sequence>
+									</xsd:complexType>
+								</xsd:element>
+							</xsd:choice>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+			</xsd:sequence>
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:element name="TxnDetails">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="merchantreference" type="xsd:string"
+					minOccurs="0" />
+				<xsd:element name="amount" minOccurs="0">
+					<xsd:annotation>
+						<xsd:documentation>Mandatory for CardTxn and ChequeTxn, but
+							optional
+							for HistoricTxn,except drawdown transactions
+						</xsd:documentation>
+					</xsd:annotation>
+					<xsd:complexType>
+						<xsd:simpleContent>
+							<xsd:extension base="xsd:decimal">
+								<xsd:attribute name="currency" type="xsd:string"
+									use="optional" />
+								<xsd:attribute name="cashback" type="xsd:string"
+									use="optional" />
+							</xsd:extension>
+						</xsd:simpleContent>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="transactionsource" minOccurs="0">
+					<xsd:simpleType>
+						<xsd:restriction base="xsd:string">
+							<xsd:enumeration value="ecommerce" />
+							<xsd:enumeration value="mail-order/telephone-order" />
+							<xsd:enumeration value="point of sale" />
+						</xsd:restriction>
+					</xsd:simpleType>
+				</xsd:element>
+				<xsd:element name="capturemethod" minOccurs="0">
+					<xsd:complexType>
+						<xsd:simpleContent>
+							<xsd:extension base="xsd:string">
+								<xsd:attribute name="Streamline_CA_environment"
+									type="xsd:string" use="optional" />
+								<xsd:attribute name="HSBC_CA_environment" type="xsd:string"
+									use="optional" />
+							</xsd:extension>
+						</xsd:simpleContent>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="Order" minOccurs="0">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="Customer" minOccurs="0">
+								<xsd:complexType>
+									<xsd:complexContent>
+										<xsd:extension base="PartyType">
+											<xsd:sequence>
+												<xsd:element name="Company" minOccurs="0">
+													<xsd:complexType>
+														<xsd:sequence>
+															<xsd:element name="name" type="xsd:string" />
+															<xsd:element name="Address" minOccurs="0"
+																type="AddressType" />
+															<xsd:element name="telephone" minOccurs="0"
+																type="xsd:string" />
+															<xsd:element name="fax" minOccurs="0"
+																type="xsd:string" />
+															<xsd:element name="purchase_description"
+																minOccurs="0" type="xsd:string" />
+														</xsd:sequence>
+													</xsd:complexType>
+												</xsd:element>
+												<xsd:element name="CustomerHistory" minOccurs="0">
+													<xsd:complexType>
+														<xsd:sequence>
+															<xsd:element name="account" minOccurs="0"
+																type="xsd:string" />
+															<xsd:element name="promos" minOccurs="0"
+																type="xsd:boolean" />
+															<xsd:element name="loyality" minOccurs="0"
+																type="xsd:boolean" />
+															<xsd:element name="previous_cust" minOccurs="0"
+																type="xsd:boolean" />
+															<xsd:element name="password_access"
+																minOccurs="0" type="xsd:boolean" />
+															<xsd:element name="forgot_password"
+																minOccurs="0" type="xsd:boolean" />
+															<xsd:element name="formfill" minOccurs="0">
+																<xsd:simpleType>
+																	<xsd:restriction base="xsd:string">
+																		<xsd:enumeration value="E" />
+																		<xsd:enumeration value="M" />
+																		<xsd:enumeration value="N" />
+																	</xsd:restriction>
+																</xsd:simpleType>
+															</xsd:element>
+															<xsd:element name="website" minOccurs="0"
+																type="xsd:string" />
+															<xsd:element name="cookies" minOccurs="0"
+																type="xsd:boolean" />
+														</xsd:sequence>
+													</xsd:complexType>
+												</xsd:element>
+												<xsd:element name="date_of_birth" minOccurs="0"
+													type="xsd:date" />
+												<xsd:element name="national_id" minOccurs="0"
+													type="xsd:string" />
+												<xsd:element name="ip_address" minOccurs="0">
+													<xsd:simpleType>
+														<xsd:restriction base="xsd:string">
+															<xsd:minLength value="7" />
+															<xsd:maxLength value="15" />
+														</xsd:restriction>
+													</xsd:simpleType>
+												</xsd:element>
+												<xsd:element name="pc_time" minOccurs="0" type="xsd:time" />
+											</xsd:sequence>
+										</xsd:extension>
+									</xsd:complexContent>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="BillingAddress" minOccurs="0"
+								type="AddressType" />
+							<xsd:element name="Recipient" minOccurs="0"
+								maxOccurs="unbounded">
+								<xsd:complexType>
+									<xsd:complexContent>
+										<xsd:extension base="PartyType">
+											<xsd:sequence>
+												<xsd:element name="LineItem" maxOccurs="unbounded"
+													minOccurs="0">
+													<xsd:complexType>
+														<xsd:complexContent>
+															<xsd:extension base="LineItemType" />
+														</xsd:complexContent>
+													</xsd:complexType>
+												</xsd:element>
+											</xsd:sequence>
+										</xsd:extension>
+									</xsd:complexContent>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="OrderDetails" minOccurs="0">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="LineItem" maxOccurs="unbounded"
+											minOccurs="0">
+											<xsd:complexType>
+												<xsd:complexContent>
+													<xsd:extension base="LineItemType" />
+												</xsd:complexContent>
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="subtotal" minOccurs="0"
+											type="xsd:decimal" />
+										<xsd:element name="handling" minOccurs="0"
+											type="xsd:decimal" />
+										<xsd:element name="tax" minOccurs="0">
+											<xsd:simpleType>
+												<xsd:restriction base="xsd:decimal" />
+											</xsd:simpleType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="Shipping" minOccurs="0" type="ShippingType" />
+							<xsd:element name="returns_allowed" minOccurs="0"
+								type="xsd:boolean" />
+							<xsd:element ref="gift" minOccurs="0" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="LineItemDetail" minOccurs="0">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="customercode">
+								<xsd:annotation>
+									<xsd:documentation>Cardholder Transaction Reference/Customer
+										Reference Identifier/Customer Code.
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="20" />
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="transactionVAT" type="xsd:decimal">
+								<xsd:annotation>
+									<xsd:documentation>Transaction VAT amount.</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="transactionVATstatus" type="xsd:boolean">
+								<xsd:annotation>
+									<xsd:documentation>Set to '1'.</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="customerVATnumber" minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>Required fro cross border transactions
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="13" />
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="supplierorderreference" minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>Supplier defined Reference
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:maxLength value="12" />
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="originalorderdate" type="xsd:string"
+								minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>YYMMDD. Defaults to todays date
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="discountamount" type="xsd:decimal"
+								minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>Tranaction level discount.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="merchantVATnumber" minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>Merchant VAT number. Required for merchants
+										who bank with Barclays.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="Shipping" minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>Optional shipping information.
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:complexType>
+									<xsd:sequence minOccurs="0">
+										<xsd:element name="shippingamount" type="xsd:decimal"
+											minOccurs="0">
+											<xsd:annotation>
+												<xsd:documentation>Shipping/.freight charge (pre VAT.)
+												</xsd:documentation>
+											</xsd:annotation>
+										</xsd:element>
+										<xsd:element name="destinationpostalcode"
+											minOccurs="0">
+											<xsd:annotation>
+												<xsd:documentation>Destination postal code
+												</xsd:documentation>
+											</xsd:annotation>
+											<xsd:simpleType>
+												<xsd:restriction base="xsd:string">
+													<xsd:maxLength value="10" />
+												</xsd:restriction>
+											</xsd:simpleType>
+										</xsd:element>
+										<xsd:element name="totalamount" type="xsd:decimal">
+											<xsd:annotation>
+												<xsd:documentation>The total value of the item(s). This
+													value should be preVAT.
+												</xsd:documentation>
+											</xsd:annotation>
+										</xsd:element>
+										<xsd:element name="shipfrompostalcode" minOccurs="0">
+											<xsd:annotation>
+												<xsd:documentation>Postal code of ship from address.
+												</xsd:documentation>
+											</xsd:annotation>
+											<xsd:simpleType>
+												<xsd:restriction base="xsd:string">
+													<xsd:maxLength value="10" />
+												</xsd:restriction>
+											</xsd:simpleType>
+										</xsd:element>
+										<xsd:element name="destinationcountrycode"
+											minOccurs="0">
+											<xsd:annotation>
+												<xsd:documentation>ISO country code</xsd:documentation>
+											</xsd:annotation>
+											<xsd:simpleType>
+												<xsd:restriction base="xsd:string">
+													<xsd:minLength value="3" />
+													<xsd:maxLength value="3" />
+												</xsd:restriction>
+											</xsd:simpleType>
+										</xsd:element>
+										<xsd:element name="shippingVATrate" type="xsd:decimal"
+											minOccurs="0">
+											<xsd:annotation>
+												<xsd:documentation>VAT rate for shipping fee.
+												</xsd:documentation>
+											</xsd:annotation>
+										</xsd:element>
+										<xsd:element name="AddressDetail">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="address" />
+													<xsd:element name="postcode" />
+													<xsd:element name="country" />
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="Items">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="Item" maxOccurs="unbounded">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="unicost" type="xsd:decimal">
+														<xsd:annotation>
+															<xsd:documentation>Unit cost of the item(s)
+															</xsd:documentation>
+														</xsd:annotation>
+													</xsd:element>
+													<xsd:element name="unitmeasure" type="xsd:string">
+														<xsd:annotation>
+															<xsd:documentation>Unit of measure</xsd:documentation>
+														</xsd:annotation>
+													</xsd:element>
+													<xsd:element name="quantity" type="xsd:string">
+														<xsd:annotation>
+															<xsd:documentation>Number of items</xsd:documentation>
+														</xsd:annotation>
+													</xsd:element>
+													<xsd:element name="vatrate" type="xsd:decimal">
+														<xsd:annotation>
+															<xsd:documentation>Item VAT rate.</xsd:documentation>
+														</xsd:annotation>
+													</xsd:element>
+													<xsd:element name="product_code">
+														<xsd:annotation>
+															<xsd:documentation>Merchant product code.
+															</xsd:documentation>
+														</xsd:annotation>
+														<xsd:simpleType>
+															<xsd:restriction base="xsd:string">
+																<xsd:maxLength value="12" />
+															</xsd:restriction>
+														</xsd:simpleType>
+													</xsd:element>
+													<xsd:element name="description">
+														<xsd:annotation>
+															<xsd:documentation>Item description.</xsd:documentation>
+														</xsd:annotation>
+														<xsd:simpleType>
+															<xsd:restriction base="xsd:string">
+																<xsd:maxLength value="26" />
+															</xsd:restriction>
+														</xsd:simpleType>
+													</xsd:element>
+													<xsd:element name="discountamount" type="xsd:decimal"
+														minOccurs="0">
+														<xsd:annotation>
+															<xsd:documentation>Item level discount.
+															</xsd:documentation>
+														</xsd:annotation>
+													</xsd:element>
+													<xsd:element name="commoditycode" type="xsd:string"
+														minOccurs="0">
+														<xsd:annotation>
+															<xsd:documentation>Product commodity code from the
+																standard list. If this is not
+																supplied then it will be
+																defaulted to a value of '0000'.
+															</xsd:documentation>
+														</xsd:annotation>
+													</xsd:element>
+													<xsd:element name="totalamount" />
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="customernumber" />
+							<xsd:element name="customerref1" />
+							<xsd:element name="customerref2" />
+							<xsd:element name="originalinvoicenumber" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="ThreeDSecure" minOccurs="0">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="verify">
+								<xsd:annotation>
+									<xsd:documentation>This element indicates whether the merchant
+										wishes this transaction to be checked by
+										the 3-D Secure system.
+									</xsd:documentation>
+								</xsd:annotation>
+								<xsd:simpleType>
+									<xsd:restriction base="xsd:string">
+										<xsd:enumeration value="yes" />
+										<xsd:enumeration value="no" />
+									</xsd:restriction>
+								</xsd:simpleType>
+							</xsd:element>
+							<xsd:element name="merchant_url">
+								<xsd:annotation>
+									<xsd:documentation>This element contains the URL to the
+										merchant site used for this transaction.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="purchase_desc">
+								<xsd:annotation>
+									<xsd:documentation>A short description of what has been
+										purchased. This is shown to the card holder
+										by the ACS.
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="purchase_datetime" minOccurs="0">
+								<xsd:annotation>
+									<xsd:documentation>The Date and Time of the transaction. If
+										blank use "now".
+									</xsd:documentation>
+								</xsd:annotation>
+							</xsd:element>
+							<xsd:element name="Browser" minOccurs="0">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="device_category">
+											<xsd:annotation>
+												<xsd:documentation>An indication of the device used for
+													this transaction, either 0 for a PC
+													or 1 for a mobile device.
+												</xsd:documentation>
+											</xsd:annotation>
+											<xsd:simpleType>
+												<xsd:restriction base="xsd:string">
+													<xsd:enumeration value="0" />
+													<xsd:enumeration value="1" />
+												</xsd:restriction>
+											</xsd:simpleType>
+										</xsd:element>
+										<xsd:element name="accept_headers">
+											<xsd:annotation>
+												<xsd:documentation>The MIME types of the headers
+													accepted by this device
+												</xsd:documentation>
+											</xsd:annotation>
+										</xsd:element>
+										<xsd:element name="user_agent">
+											<xsd:annotation>
+												<xsd:documentation>The User Agent associated with this
+													device
+												</xsd:documentation>
+											</xsd:annotation>
+										</xsd:element>
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="num_installments" minOccurs="0" />
+							<xsd:element name="recur_expiry" minOccurs="0" />
+							<xsd:element name="recur_frequency" minOccurs="0" />
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="The3rdMan">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="CustomerInformation">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="telephone" />
+										<xsd:element name="forename" />
+										<xsd:element name="surname" />
+										<xsd:element name="alt_telephone" />
+										<xsd:element name="email" />
+										<xsd:element name="ip_address" />
+										<xsd:element name="customer_dob" />
+										<xsd:element name="customer_reference" />
+										<xsd:element name="driving_license_number" />
+										<xsd:element name="first_purchase_date" />
+										<xsd:element name="introduced_by" />
+										<xsd:element name="order_number" />
+										<xsd:element name="previous_purchases" />
+										<xsd:element name="time_zone" />
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="OrderInformation">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="Products">
+											<xsd:complexType>
+												<xsd:sequence>
+													<xsd:element name="Product" maxOccurs="unbounded">
+														<xsd:complexType>
+															<xsd:sequence>
+																<xsd:element name="quantity" />
+																<xsd:element name="code" />
+																<xsd:element name="price" />
+															</xsd:sequence>
+														</xsd:complexType>
+													</xsd:element>
+												</xsd:sequence>
+											</xsd:complexType>
+										</xsd:element>
+										<xsd:element name="distribution_channel" />
+										<xsd:element name="media_source" />
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="BillingAddress">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="postcode" />
+										<xsd:element name="street_address_1" />
+										<xsd:element name="street_address_2" />
+										<xsd:element name="county" />
+										<xsd:element name="city" />
+										<xsd:element name="country" />
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="DeliveryAddress">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="postcode" />
+										<xsd:element name="street_address_1" />
+										<xsd:element name="street_address_2" />
+										<xsd:element name="county" />
+										<xsd:element name="city" />
+										<xsd:element name="country" />
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="AirlinesDetails">
+					<xsd:complexType>
+						<xsd:sequence>
+							<xsd:element name="agencyname" />
+							<xsd:element name="agencycode" />
+							<xsd:element name="departurepoint" />
+							<xsd:element name="Passenger">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="passengername" />
+										<xsd:element name="passengerref" />
+										<xsd:element name="ticketnumber" />
+										<xsd:element name="ticketprice" />
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+							<xsd:element name="FlightLeg">
+								<xsd:complexType>
+									<xsd:sequence>
+										<xsd:element name="carriercode" />
+										<xsd:element name="class" />
+										<xsd:element name="departuredate" />
+										<xsd:element name="destination" />
+										<xsd:element name="flight_number" />
+									</xsd:sequence>
+								</xsd:complexType>
+							</xsd:element>
+						</xsd:sequence>
+					</xsd:complexType>
+				</xsd:element>
+				<xsd:element name="allocated_reference" />
+				<xsd:element name="mode" />
+				<xsd:element name="txndate" />
+				<xsd:element name="txntime" />
+				<xsd:element name="vgismessage" />
+			</xsd:sequence>
+			<xsd:attribute name="type" type="xsd:string" />
+		</xsd:complexType>
+	</xsd:element>
+	<xsd:complexType name="LineItemType">
+		<xsd:sequence>
+			<xsd:element name="description" type="xsd:string"
+				maxOccurs="1" minOccurs="0" />
+			<xsd:element name="Shipping" type="ShippingType"
+				minOccurs="0" />
+			<xsd:element ref="gift" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="category" type="xsd:string" />
+		<xsd:attribute name="manpartno" type="xsd:string" />
+		<xsd:attribute name="manufacturer" type="xsd:string" />
+		<xsd:attribute name="product_code" type="xsd:string" />
+		<xsd:attribute name="quantity" type="xsd:positiveInteger" />
+		<xsd:attribute name="sku" type="xsd:string" />
+		<xsd:attribute name="type" type="xsd:string" />
+		<xsd:attribute name="unit_price" type="xsd:decimal" />
+		<xsd:attribute name="upc" type="xsd:string" />
+	</xsd:complexType>
+	<xsd:complexType name="PartyType">
+		<xsd:sequence>
+			<xsd:element name="salutation" minOccurs="0" type="xsd:string" />
+			<xsd:element name="forename" minOccurs="0" type="xsd:string" />
+			<xsd:element name="middlename" minOccurs="0" type="xsd:string" />
+			<xsd:element name="surname" minOccurs="0" type="xsd:string" />
+			<xsd:element name="Address" minOccurs="0" type="AddressType" />
+			<xsd:element name="email" minOccurs="0" type="xsd:string" />
+			<xsd:element name="telephone" minOccurs="0" type="xsd:string" />
+			<xsd:element name="alt_telephone" minOccurs="0" type="xsd:string" />
+			<xsd:element name="fax" minOccurs="0" type="xsd:string" />
+			<xsd:element name="age" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:integer">
+						<xsd:minInclusive value="0" />
+						<xsd:maxInclusive value="150" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="min_age" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:integer">
+						<xsd:minInclusive value="0" />
+						<xsd:maxInclusive value="150" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="max_age" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:integer">
+						<xsd:minInclusive value="0" />
+						<xsd:maxInclusive value="150" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="ShippingType">
+		<xsd:sequence>
+			<xsd:element name="method" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="N" />
+						<xsd:enumeration value="T" />
+						<xsd:enumeration value="W" />
+						<xsd:enumeration value="C" />
+						<xsd:enumeration value="D" />
+						<xsd:enumeration value="I" />
+						<xsd:enumeration value="M" />
+						<xsd:enumeration value="P" />
+						<xsd:enumeration value="O" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="carrier" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="F" />
+						<xsd:enumeration value="P" />
+						<xsd:enumeration value="U" />
+						<xsd:enumeration value="L" />
+						<xsd:enumeration value="G" />
+						<xsd:enumeration value="D" />
+						<xsd:enumeration value="O" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="tracking_number" minOccurs="0"
+				type="xsd:string" />
+			<xsd:element name="instructions" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:string">
+						<xsd:enumeration value="C" />
+						<xsd:enumeration value="A" />
+						<xsd:enumeration value="D" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="comments" minOccurs="0" type="xsd:string" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="Address">
+		<xsd:annotation>
+			<xsd:documentation>URU address type</xsd:documentation>
+		</xsd:annotation>
+		<xsd:sequence>
+			<xsd:element name="postcode" type="xsd:string" minOccurs="0" />
+			<xsd:element name="building_name" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="building_no" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="sub_building" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="organisation" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="street" type="xsd:string" minOccurs="0" />
+			<xsd:element name="sub_street" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="town" type="xsd:string" minOccurs="0" />
+			<xsd:element name="district" type="xsd:string" minOccurs="0" />
+			<xsd:element name="first_year_of_residence" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="last_year_of_residence" type="xsd:string"
+				minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="AddressType">
+		<xsd:sequence>
+			<xsd:element name="pobox" type="xsd:string" minOccurs="0" />
+			<xsd:element name="apartment" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="streetaddress" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="moreaddress" type="xsd:string"
+				minOccurs="0" />
+			<xsd:element name="city" type="xsd:string" minOccurs="0" />
+			<xsd:element name="region" type="xsd:string" minOccurs="0" />
+			<xsd:element name="country" minOccurs="0">
+				<xsd:simpleType>
+					<xsd:restriction base="xsd:integer">
+						<xsd:minInclusive value="000" />
+						<xsd:maxInclusive value="999" />
+					</xsd:restriction>
+				</xsd:simpleType>
+			</xsd:element>
+			<xsd:element name="postcode" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+	</xsd:complexType>
+</xsd:schema>

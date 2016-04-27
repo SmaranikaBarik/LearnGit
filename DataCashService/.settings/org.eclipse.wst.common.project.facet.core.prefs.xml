@@ -1,0 +1,7 @@
+<root>
+  <facet id="jpt.jaxb">
+    <node name="classgen">
+      <attribute name="package" value="com.mhe.rest.datacash.entity"/>
+    </node>
+  </facet>
+</root>

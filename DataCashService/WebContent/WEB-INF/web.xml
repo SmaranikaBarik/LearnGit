@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" id="WebApp_ID" version="2.5">
+  <display-name>DataCashService</display-name>
+   <servlet>
+    <display-name>DataCash HPP Application</display-name>
+    <servlet-name>DataCashService</servlet-name>
+    <servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
+    <init-param>
+      <param-name>javax.ws.rs.Application</param-name>
+      <param-value>com.mhe.rest.datacash.provider.DataCashHPPApplication</param-value>
+    </init-param>
+    <init-param>
+        <param-name>com.sun.jersey.api.json.POJOMappingFeature</param-name>
+        <param-value>true</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>DataCashService</servlet-name>
+    <url-pattern>/tokenization/*</url-pattern>
+  </servlet-mapping>
+  <servlet>
+    <servlet-name>ERP_OrderInfo.jsp</servlet-name>
+    <jsp-file>/ERP_OrderInfo.jsp</jsp-file>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>ERP_OrderInfo.jsp</servlet-name>
+    <url-pattern>/ERP_OrderInfo.html</url-pattern>
+  </servlet-mapping>
+ 
+</web-app>
