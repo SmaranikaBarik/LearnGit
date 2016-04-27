@@ -21,20 +21,15 @@ import com.mhe.rest.datacash.util.LoggerUtility;
 @Path("/DataCash")
 public class DataCashClient extends DataCashAbstractService {
 
-	// static Logger logger = Logger.getLogger(DataCashClient.class.getName());   
-//checking the changes to add to Git
-	protected static Logger logger = LoggerUtility
-			.getLogger(DataCashClient.class.getName());
+	protected static Logger logger = LoggerUtility.getLogger(DataCashClient.class.getName());
 
 	@GET
 	@Path("SessionSetUp")
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response requestSessionId(@Context UriInfo uri)
-			throws JAXBException, XPathExpressionException {
+	public Response requestSessionId(@Context UriInfo uri) throws JAXBException {
 
-		logger.info("Absolute URL for the GET request is  : "
-				+ uri.getAbsolutePath().toString());
+		logger.info("Absolute URL for the GET request is  : " + uri.getAbsolutePath().toString());
 		MultivaluedMap<String, String> queryParams = uri.getQueryParameters();
 		logger.info("@GET requestSessionId is  : " + queryParams.toString());
 
@@ -45,37 +40,34 @@ public class DataCashClient extends DataCashAbstractService {
 			return getSessionId(queryParams);
 	}
 
+	
 	@GET
 	@Path("QueryData")
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response requestQueryData(
-			@QueryParam("dts_reference") String dts_reference)
+	public Response requestQueryData(@QueryParam("dts_reference") String dts_reference)
 			throws JAXBException, XPathExpressionException {
 
 		logger.info("Query reference value is   : " + dts_reference);
 
 		if (dts_reference == null || dts_reference.isEmpty()) {
 			logger.info("Within VALIDATION for query method");
-			return Response.ok("Validating query Endpoint was SUCCESSFUL")
-					.build();
+			return Response.ok("Validating query Endpoint was SUCCESSFUL").build();
 		} else {
 			return getQueryResults(dts_reference);
 		}
 
 	}
 
+	
+	
 	@GET
 	@Path("FulFill")
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response requestQueryData(
-			@QueryParam("merchantref") String merchantref,
-			@QueryParam("amount") String amount,
-			@QueryParam("authcode") String authcode,
-			@QueryParam("dtreference") String dtreference,
-			@QueryParam("currency") String currency) throws JAXBException,
-			XPathExpressionException {
+	public Response requestQueryData(@QueryParam("merchantref") String merchantref, @QueryParam("amount") String amount,
+			@QueryParam("authcode") String authcode, @QueryParam("dtreference") String dtreference,
+			@QueryParam("currency") String currency) throws JAXBException, XPathExpressionException {
 
 		logger.info("merchantref value is   : " + merchantref);
 		logger.info("amount value is   : " + amount);
@@ -85,25 +77,22 @@ public class DataCashClient extends DataCashAbstractService {
 
 		if (merchantref.equals(null) || amount.equals(null)) {
 			logger.info("Within VALIDATION for FulFill method");
-			return Response.ok("Validating Fulfill Endpoint was SUCCESSFUL")
-					.build();
+			return Response.ok("Validating Fulfill Endpoint was SUCCESSFUL").build();
 		} else {
-			return getFulfillResults(merchantref, amount, authcode,
-					dtreference, currency);
+			return getFulfillResults(merchantref, amount, authcode, dtreference, currency);
 		}
 
 	}
 
+	
+	
 	@GET
 	@Path("ReAuth")
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response requestQueryData(
-			@QueryParam("merchantref") String merchantref,
-			@QueryParam("amount") String amount,
-			@QueryParam("dtreference") String dtreference,
-			@QueryParam("currency") String currency) throws JAXBException,
-			XPathExpressionException {
+	public Response requestQueryData(@QueryParam("merchantref") String merchantref, @QueryParam("amount") String amount,
+			@QueryParam("dtreference") String dtreference, @QueryParam("currency") String currency)
+			throws JAXBException {
 
 		logger.info("merchantref value is   : " + merchantref);
 		logger.info("amount value is   : " + amount);
@@ -111,8 +100,7 @@ public class DataCashClient extends DataCashAbstractService {
 
 		if (merchantref.equals(null) || amount.equals(null)) {
 			logger.info("Within VALIDATION for FulFill method");
-			return Response.ok("Validating Fulfill Endpoint was SUCCESSFUL")
-					.build();
+			return Response.ok("Validating Fulfill Endpoint was SUCCESSFUL").build();
 		} else {
 			return getReAuthResults(merchantref, amount, dtreference, currency);
 		}
