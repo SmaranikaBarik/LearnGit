@@ -22,7 +22,7 @@ import com.mhe.rest.datacash.util.LoggerUtility;
 public class DataCashClient extends DataCashAbstractService {
 
 	// static Logger logger = Logger.getLogger(DataCashClient.class.getName());   
-
+//checking the changes to add to Git
 	protected static Logger logger = LoggerUtility
 			.getLogger(DataCashClient.class.getName());
 
