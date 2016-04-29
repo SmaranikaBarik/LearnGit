@@ -22,7 +22,7 @@ public class AppExceptionMapper implements ExceptionMapper<AppException> {
 	@Override
 	public Response toResponse(AppException ex) {
 		// TODO Auto-generated method stub
-		logger.error("The error is a App Exception and error is :"
+		logger.error("The error is a App Exception and error is:"
 				+ ex.toString());
 		logger.error("APP EXCEPTION:", ex);
 		UriBuilder builder = UriBuilder.fromUri(ex.getLocation());

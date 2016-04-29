@@ -1,8 +1,10 @@
 package com.mhe.rest.datacash;
 
 import java.io.StringReader;
-import java.math.BigDecimal;
 import java.net.URI;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Set;
 
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.MultivaluedMap;
@@ -18,43 +20,113 @@ import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.log4j.Logger;
 
+import sun.misc.BASE64Encoder;
+
 import com.mhe.rest.datacash.request.entity.Request;
-import com.mhe.rest.datacash.request.entity.TxnDetails;
 import com.mhe.rest.datacash.util.LoggerUtility;
 import com.mhe.rest.datacash.util.PropertiesUtil;
+import com.mhe.rest.datacash.exception.AppException;
 import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientHandlerException;
 import com.sun.jersey.api.client.ClientResponse;
 import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.core.util.MultivaluedMapImpl;
 
 public class DataCashAbstractService {
 
-	protected static Logger logger = LoggerUtility.getLogger(DataCashAbstractService.class.getName());
+	protected static Logger logger = LoggerUtility
+			.getLogger(DataCashAbstractService.class.getName());
 
 	// logger.info("Entered the DataCashAbstractService class");
 
-	protected static final String HPS_URL = (PropertiesUtil.readProperty()).getProperty("hps_url");
+	protected static final String HPS_URL = (PropertiesUtil.readProperty())
+			.getProperty("hps_url");
 
-	protected static final String CLIENT = (PropertiesUtil.readProperty()).getProperty("client");
+	protected static final String CLIENT = (PropertiesUtil.readProperty())
+			.getProperty("client");
 
-	protected static final String PASSWORD = (PropertiesUtil.readProperty()).getProperty("password");
+	protected static final String PASSWORD = (PropertiesUtil.readProperty())
+			.getProperty("password");
 
-	protected static final int PAGE_SET_ID = Integer
-			.parseInt((PropertiesUtil.readProperty()).getProperty("page_set_id"));
+	protected static final int PAGE_SET_ID = Integer.parseInt((PropertiesUtil
+			.readProperty()).getProperty("page_set_id"));
 
-	protected static final String RETURN_URL = (PropertiesUtil.readProperty()).getProperty("return_url");
+	protected static final String RETURN_URL = (PropertiesUtil.readProperty())
+			.getProperty("return_url");
 
-	protected static final String EXPIRY_URL = (PropertiesUtil.readProperty()).getProperty("expiry_url");
+	protected static final String EXPIRY_URL = (PropertiesUtil.readProperty())
+			.getProperty("expiry_url");
 
-	protected static final String SESSION_REDIRECT_URL = (PropertiesUtil.readProperty())
-			.getProperty("session_redirect_url");
+	// protected static final String SESSION_REDIRECT_URL = (PropertiesUtil
+	// .readProperty()).getProperty("session_redirect_url");
 
-	protected static final String RESPONSE_URL = (PropertiesUtil.readProperty()).getProperty("response_url");
+	protected static final String RESPONSE_URL = (PropertiesUtil.readProperty())
+			.getProperty("response_url");
+
+	protected static final String ERP_WRITEBACK_URL = (PropertiesUtil
+			.readProperty()).getProperty("erp_writeback_url");
+
+	protected static final String ERROR_RESPONSE_URL = (PropertiesUtil
+			.readProperty()).getProperty("consumer_error_response_url");
 
 	private static WebResource webInitResource = null;
+
+	private static WebResource osbResource = null;
+
+	private static Client osbClient = null;
+
+	private static WebResource getOSBResource() {
+		if (osbResource != null)
+			return osbResource;
+		osbResource = getOSBClient().resource(ERP_WRITEBACK_URL);
+		return osbResource;
+	}
+
+	private static Client getOSBClient() {
+		if (osbClient != null)
+			return osbClient;
+		int connect_timeout = 5000;
+		int read_timeout = 5000;
+		try {
+			read_timeout = Integer.parseInt((PropertiesUtil.readProperty())
+					.getProperty("READ_TIMEOUT"));
+			connect_timeout = Integer.parseInt((PropertiesUtil.readProperty())
+					.getProperty("CONNECTION_TIMEOUT"));
+		} catch (NumberFormatException numberFormatException) {
+			logger.error("ERROR READING TIMEOUT VALUES", numberFormatException);
+		}
+		ClientConfig osbClientConfig = new DefaultClientConfig();
+		osbClientConfig.getProperties().put(
+				ClientConfig.PROPERTY_CONNECT_TIMEOUT, connect_timeout);
+		osbClientConfig.getProperties().put(ClientConfig.PROPERTY_READ_TIMEOUT,
+				read_timeout);
+		osbClient = Client.create(osbClientConfig);
+		return osbClient;
+	}
+
+	public static String printMap(MultivaluedMap queryMap) {
+		StringBuffer sb = new StringBuffer("\nREQUEST:\n");
+		Set formKeys = queryMap.keySet();
+		Iterator iterator = formKeys.iterator();
+		String formKey = null;
+		String formValue = null;
+		while (iterator.hasNext()) {
+			formKey = (String) iterator.next();
+			formValue = (String) ((LinkedList) queryMap.get(formKey)).get(0);
+			if (formValue != null && !formValue.equals(""))
+				sb.append("<" + formKey + ">" + formValue + "</" + formKey
+						+ ">");
+		}
+		return sb.toString();
+	}
 
 	private static WebResource getWebInitResource() {
 
 		logger.info("Within the getWebInitResource method");
+
+		logger.info("HPS_URL is::" + HPS_URL);
 
 		if (webInitResource != null)
 			return webInitResource;
@@ -65,19 +137,23 @@ public class DataCashAbstractService {
 		return webInitResource;
 	}
 
-	private static com.mhe.rest.datacash.response.entity.Response getResponseObject(String output)
-			throws JAXBException {
+	private static com.mhe.rest.datacash.response.entity.Response getResponseObject(
+			String output) throws JAXBException {
 
 		logger.info("Within the getResponseObject method");
 
-		JAXBContext jaxbContext = JAXBContext.newInstance(com.mhe.rest.datacash.response.entity.Response.class);
+		JAXBContext jaxbContext = JAXBContext
+				.newInstance(com.mhe.rest.datacash.response.entity.Response.class);
 		Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
 
 		StreamSource streamSource = new StreamSource(new StringReader(output));
-		JAXBElement<com.mhe.rest.datacash.response.entity.Response> res = unmarshaller.unmarshal(streamSource,
-				com.mhe.rest.datacash.response.entity.Response.class);
+		JAXBElement<com.mhe.rest.datacash.response.entity.Response> res = unmarshaller
+				.unmarshal(streamSource,
+						com.mhe.rest.datacash.response.entity.Response.class);
 
-		logger.info("Response is::" + (com.mhe.rest.datacash.response.entity.Response) res.getValue());
+		logger.info("Response is::"
+				+ (com.mhe.rest.datacash.response.entity.Response) res
+						.getValue());
 
 		return (com.mhe.rest.datacash.response.entity.Response) res.getValue();
 
@@ -111,19 +187,36 @@ public class DataCashAbstractService {
 		return marshaller;
 	}
 
-	@SuppressWarnings("restriction")
-	protected Response getSessionId(MultivaluedMap<String, String> queryParams) throws JAXBException {
+	// @SuppressWarnings("restriction")
+	protected Response getSessionId(MultivaluedMap<String, String> queryParams)
+			throws JAXBException {
 
 		logger.info("Within the getSessionId method ");
 
 		new DataCashSessionSetUpRequest();
-		Request request = DataCashSessionSetUpRequest.createSessionSetUpRequest(queryParams, PAGE_SET_ID, RETURN_URL,
-				EXPIRY_URL);
+		Request request = DataCashSessionSetUpRequest
+				.createSessionSetUpRequest(queryParams, PAGE_SET_ID,
+						RETURN_URL, EXPIRY_URL);
+
+		logger.info("request is::" + request.toString());
 
 		getMarshaller().marshal(request, System.out);
 
-		ClientResponse response = getWebInitResource().accept(MediaType.APPLICATION_XML).post(ClientResponse.class,
-				request);
+		ClientResponse response = getWebInitResource().accept(
+				MediaType.APPLICATION_XML).post(ClientResponse.class, request);
+
+		// Client restClient = Client.create();
+		//
+		// logger.info("restClient is ::" + restClient);
+		//
+		// WebResource webResource = restClient.resource(HPS_URL);
+		//
+		// logger.info("webResource is::" + webResource);
+		//
+		// logger.info("request after marshalling is::" + request.toString());
+		//
+		// ClientResponse response = webResource.accept("application/xml").post(
+		// ClientResponse.class, request);
 
 		String output1 = response.getEntity(String.class);
 
@@ -150,47 +243,80 @@ public class DataCashAbstractService {
 		return response1;
 	}
 
-	@SuppressWarnings("restriction")
-	protected Response getQueryResults(String reference) throws JAXBException, XPathExpressionException {
+	// @SuppressWarnings("restriction")
+	protected Response getQueryResults(String reference) throws JAXBException,
+			XPathExpressionException, AppException {
 
 		logger.info("Within the getQueryResults method");
 
-		Request firstQueryRequest = DataCashQueryRequest.createQueryRequest(reference);
+		Request firstQueryRequest = DataCashQueryRequest
+				.createQueryRequest(reference);
 
 		getMarshaller().marshal(firstQueryRequest, System.out);
 
-		ClientResponse firstQueryresponse = getWebInitResource().accept(MediaType.APPLICATION_XML)
-				.post(ClientResponse.class, firstQueryRequest);
+		ClientResponse firstQueryresponse = getWebInitResource().accept(
+				MediaType.APPLICATION_XML).post(ClientResponse.class,
+				firstQueryRequest);
+
+		// Client restClient = Client.create();
+		//
+		// logger.info("restClient is ::" + restClient);
+		//
+		// WebResource webResource = restClient.resource(HPS_URL);
+		//
+		// logger.info("webResource is::" + webResource);
+		//
+		// logger.info("firstQueryRequest after marshalling is::"
+		// + firstQueryRequest.toString());
+		//
+		// ClientResponse firstQueryresponse = webResource.accept(
+		// "application/xml")
+		// .post(ClientResponse.class, firstQueryRequest);
 
 		String firstQueryResults = firstQueryresponse.getEntity(String.class);
 
-		String finalQueryRef = firstQueryResults.split("<datacash_reference>")[1].split("</datacash_reference>")[0];
+		com.mhe.rest.datacash.response.entity.Response st1 = getResponseObject(firstQueryResults);
 
-		Request finalQueryRequest = DataCashQueryRequest.createQueryRequest(finalQueryRef);
+		String finalQueryRef = st1.getHpsTxn().getDatacashReference();
+
+		Request finalQueryRequest = DataCashQueryRequest
+				.createQueryRequest(finalQueryRef);
 
 		getMarshaller().marshal(finalQueryRequest, System.out);
 
-		ClientResponse finalQueryresponse = getWebInitResource().accept(MediaType.APPLICATION_XML)
-				.post(ClientResponse.class, finalQueryRequest);
+		ClientResponse finalQueryresponse = getWebInitResource().accept(
+				MediaType.APPLICATION_XML).post(ClientResponse.class,
+				finalQueryRequest);
+
+		// logger.info("finalQueryRequest after marshalling is::"
+		// + finalQueryRequest.toString());
+		//
+		// ClientResponse finalQueryresponse = webResource.accept(
+		// "application/xml")
+		// .post(ClientResponse.class, finalQueryRequest);
 
 		String finalQueryResults = finalQueryresponse.getEntity(String.class);
 
-		String orderId = finalQueryResults.split("<merchant_reference>")[1].split("</merchant_reference>")[0];
+		com.mhe.rest.datacash.response.entity.Response st = getResponseObject(finalQueryResults);
 
-		String token = finalQueryResults.split("<token>")[1].split("</token>")[0];
+		String orderId = st.getQueryTxnResult().getMerchantReference();
 
-		String authCode = finalQueryResults.split("<authcode>")[1].split("</authcode>")[0];
+		String token = st.getQueryTxnResult().getCard().getToken();
 
-		String dataCashRef = finalQueryResults.split("<datacash_reference>")[1].split("</datacash_reference>")[0];
+		String authCode = st.getQueryTxnResult().getAuthcode();
 
-		String cardType = finalQueryResults.split("<scheme>")[1].split("</scheme>")[0];
+		String dataCashRef = st.getQueryTxnResult().getDatacashReference();
 
-		String cardallDigits = finalQueryResults.split("<pan>")[1].split("</pan>")[0];
+		String cardType = st.getQueryTxnResult().getCard().getScheme();
 
-		String cardLastFourDigits = cardallDigits.substring(cardallDigits.length() - 4);
+		String cardallDigits = st.getQueryTxnResult().getCard().getPan();
 
-		String reason = finalQueryResults.split("<reason>")[1].split("</reason>")[0];
-		String status = finalQueryResults.split("<status>")[1].split("</status>")[0];
+		String cardLastFourDigits = cardallDigits.substring(cardallDigits
+				.length() - 4);
+
+		String reason = st.getQueryTxnResult().getReason();
+
+		String status = st.getQueryTxnResult().getStatus();
 
 		String finalStatus = null;
 		String finalStatusCode = null;
@@ -206,6 +332,50 @@ public class DataCashAbstractService {
 
 		// String siteLocation =
 		// "https://172.26.6.142:8002/DataCashService/HPS_Datacash_Response.jsp";
+
+		ClientResponse resp = null;
+
+		MultivaluedMap queryParams = new MultivaluedMapImpl();
+		queryParams.add("OrderId", orderId);
+		queryParams.add("ApprovalCode", authCode);
+		queryParams.add("TransactionID", dataCashRef);
+		queryParams.add("TokenNumber", token);
+		queryParams.add("CCNumber", cardLastFourDigits);
+		queryParams.add("CardType", cardType);
+		queryParams.add("Message", finalStatusCode);
+
+		String osbusername = (PropertiesUtil.readProperty())
+				.getProperty("osbusername");
+		String osbpassword = (PropertiesUtil.readProperty())
+				.getProperty("osbpassword");
+
+		String authString = osbusername + ":" + osbpassword;
+
+		logger.info("authString is::" + authString);
+
+		String authStringEnc = new String(new BASE64Encoder().encode(authString
+				.getBytes()));
+
+		try {
+			logger.info("In Try block for calling OSB service");
+			logger.info("authStringEnc is::" + authStringEnc);
+
+			resp = getOSBResource().queryParams(queryParams)
+					.accept("text/plain")
+					.header("Authorization", "Basic " + authStringEnc)
+					.get(ClientResponse.class);
+
+			String osbResponse = resp.getEntity(String.class);
+
+			logger.info("osbResponse is::" + osbResponse);
+
+		} catch (ClientHandlerException exc) {
+			logger.error("ERP WriteBack ERROR", exc);
+			String consumerRequest = printMap(queryParams);
+			throw new AppException("999", "ERP WriteBack FAILED",
+					resp.getStatus(), ERROR_RESPONSE_URL, orderId,
+					consumerRequest);
+		}
 
 		UriBuilder builder = UriBuilder.fromUri(RESPONSE_URL);
 
@@ -228,23 +398,23 @@ public class DataCashAbstractService {
 		builder.queryParam("finalStatusCode", finalStatusCode);
 
 		URI uri = builder.build();
-
 		Response response = Response.seeOther(uri).build();
 		return response;
 
 	}
 
 	@SuppressWarnings("restriction")
-	protected Response getFulfillResults(String merchantref, String amount, String authcode, String reference,
-			String currency) throws JAXBException, XPathExpressionException {
+	protected Response getFulfillResults(String merchantref, String amount,
+			String authcode, String reference, String currency)
+			throws JAXBException, XPathExpressionException {
 
-		Request request = DataCashFulFillRequest.createFulFillRequest(merchantref, amount, authcode, reference,
-				currency);
+		Request request = DataCashFulFillRequest.createFulFillRequest(
+				merchantref, amount, authcode, reference, currency);
 
 		getMarshaller().marshal(request, System.out);
 
-		ClientResponse response = getWebInitResource().accept(MediaType.APPLICATION_XML).post(ClientResponse.class,
-				request);
+		ClientResponse response = getWebInitResource().accept(
+				MediaType.APPLICATION_XML).post(ClientResponse.class, request);
 
 		String output1 = response.getEntity(String.class);
 		System.out.println("check the request --- " + response.getStatus());
@@ -253,7 +423,8 @@ public class DataCashAbstractService {
 		com.mhe.rest.datacash.response.entity.Response st = getResponseObject(output1);
 
 		System.out.println(" response entity --- " + st);
-		System.out.println("check the response entity --- " + st.getDatacashReference());
+		System.out.println("check the response entity --- "
+				+ st.getDatacashReference());
 
 		Response response1 = null;
 		if (response.getStatus() == 200) {
@@ -267,15 +438,16 @@ public class DataCashAbstractService {
 	}
 
 	@SuppressWarnings("restriction")
-	protected Response getReAuthResults(String merchantref, String amount, String dtreference, String currency)
-			throws JAXBException {
+	protected Response getReAuthResults(String merchantref, String amount,
+			String dtreference, String currency) throws JAXBException {
 
-		Request request = DataCashReAuthRequest.createReAuthRequest(merchantref, amount, dtreference, currency);
+		Request request = DataCashReAuthRequest.createReAuthRequest(
+				merchantref, amount, dtreference, currency);
 
 		getMarshaller().marshal(request, System.out);
 
-		ClientResponse response = getWebInitResource().accept(MediaType.APPLICATION_XML).post(ClientResponse.class,
-				request);
+		ClientResponse response = getWebInitResource().accept(
+				MediaType.APPLICATION_XML).post(ClientResponse.class, request);
 
 		String output1 = response.getEntity(String.class);
 		System.out.println("check the request --- " + response.getStatus());
@@ -284,7 +456,8 @@ public class DataCashAbstractService {
 		com.mhe.rest.datacash.response.entity.Response st = getResponseObject(output1);
 
 		System.out.println(" response entity --- " + st);
-		System.out.println("check the response entity --- " + st.getDatacashReference());
+		System.out.println("check the response entity --- "
+				+ st.getDatacashReference());
 
 		Response response1 = null;
 		if (response.getStatus() == 200) {

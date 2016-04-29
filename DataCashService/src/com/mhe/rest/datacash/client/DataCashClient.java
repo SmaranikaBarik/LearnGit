@@ -16,6 +16,7 @@ import javax.xml.xpath.XPathExpressionException;
 import org.apache.log4j.Logger;
 
 import com.mhe.rest.datacash.DataCashAbstractService;
+import com.mhe.rest.datacash.exception.AppException;
 import com.mhe.rest.datacash.util.LoggerUtility;
 
 @Path("/DataCash")
@@ -46,7 +47,7 @@ public class DataCashClient extends DataCashAbstractService {
 	@Consumes(MediaType.APPLICATION_XML)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response requestQueryData(@QueryParam("dts_reference") String dts_reference)
-			throws JAXBException, XPathExpressionException {
+			throws JAXBException, XPathExpressionException,AppException {
 
 		logger.info("Query reference value is   : " + dts_reference);
 

@@ -31,7 +31,7 @@ public class LoggerUtility {
 	public static Logger getLogger(String className) {
 		Properties prop = new Properties();
 		try {
-			PropertyConfigurator.configure("/apps/applications/qa/DataCash/config/" + PROPERTY_LOG_FILE_NAME);
+			PropertyConfigurator.configure("/apps/applications/DataCash/config/" + PROPERTY_LOG_FILE_NAME);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

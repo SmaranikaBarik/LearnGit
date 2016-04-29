@@ -11,7 +11,7 @@ public class DataCashSessionSetUpRequest {
 
 	protected static Logger logger = LoggerUtility.getLogger(DataCashSessionSetUpRequest.class.getName());
 
-	static Request createSessionSetUpRequest(MultivaluedMap<String, String> queryParams, int PAGE_SET_ID,
+	static Request createSessionSetUpRequest(MultivaluedMap <String, String> queryParams, int PAGE_SET_ID,
 			String RETURN_URL, String EXPIRY_URL) {
 
 		logger.info("Within the createSessionSetUpRequest method ");

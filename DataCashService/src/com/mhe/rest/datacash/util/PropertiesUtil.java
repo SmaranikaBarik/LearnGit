@@ -39,7 +39,7 @@ public class PropertiesUtil {
 
 		try {
 			fileInputStream = new FileInputStream(
-					"/apps/applications/qa/DataCash/config/"
+					"/apps/applications/DataCash/config/"
 							+ PROPERTY_FILE_NAME);
 			prop.load(fileInputStream);
 
@@ -82,7 +82,7 @@ public class PropertiesUtil {
 		FileInputStream fileInputStream = null;
 		try {
 			fileInputStream = new FileInputStream(
-					"/apps/applications/qa/DataCash/config/"
+					"/apps/applications/DataCash/config/"
 							+ PROPERTY_ERROR_FILE_NAME);
 			prop_error.load(fileInputStream);
 
