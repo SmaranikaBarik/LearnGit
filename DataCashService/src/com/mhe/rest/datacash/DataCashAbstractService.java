@@ -40,7 +40,7 @@ public class DataCashAbstractService {
 			.getLogger(DataCashAbstractService.class.getName());
 
 	// logger.info("Entered the DataCashAbstractService class");
-// checking the branching
+// checking the branching checking conflict in a line
 	protected static final String HPS_URL = (PropertiesUtil.readProperty())
 			.getProperty("hps_url");
 
